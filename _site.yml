@@ -1,0 +1,18 @@
+name: "cci-jlc-eda"
+output_dir: "."
+navbar:
+  title: "CCI-JLC EDA"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "EDA Overview"
+      href: about.html
+    - text: "Deep-Dive Part 1"
+      href: JobTran_Mst_FINAL.html
+    - text: "Deep-Dive Part 2"
+      href: part2.html
+      
+output:
+  html_document:
+    theme: flatly
+    css: style.css

@@ -1,0 +1,2847 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="CCI Analytics" />
+
+
+<title>CCI-JLC Exploratory Data Analysis (EDA)</title>
+
+<script src="site_libs/header-attrs-2.1/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">CCI-JLC EDA</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">EDA Overview</a>
+</li>
+<li>
+  <a href="JobTran_Mst_FINAL.html">Deep-Dive Part 1</a>
+</li>
+<li>
+  <a href="part2.html">Deep-Dive Part 2</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">CCI-JLC Exploratory Data Analysis (EDA)</h1>
+<h4 class="author">CCI Analytics</h4>
+<h4 class="date">2/28/2020</h4>
+
+</div>
+
+
+<p><strong>Save Instructions:</strong> <em>This file automatically saves any changes made to the current file path. This means that the file must be opened in its current location in order to view or make changes. Moving the file after changes have been made will revert the file back to its original format. Moving the file back to the previous location will restore changes.</em></p>
+<div id="overview" class="section level2">
+<h2><strong>Overview</strong></h2>
+<div id="jlc-cci-analytics-partnership-roadmap" class="section level3">
+<h3>JLC-CCI Analytics Partnership (Roadmap):</h3>
+<p>Step 1: Initial phone call for JLC overview and analytics needs. Identify opportunities for improvement.<br />
+Step 2: Request for information; Obtain datasets which may provide insights into JLC operations/financials.<br />
+<strong>Step 3: Exploratory Data Analysis (EDA); Understand what the provided data means and how we can use it. </strong> &lt;- <em>we are here</em><br />
+Step 4: Visit Rockford Facility to develop in-person knowledge of operations.<br />
+Step 5: Identify “low hanging fruit” analyses.</p>
+</div>
+<div id="eda-objectives" class="section level3">
+<h3>EDA Objective(s):</h3>
+<ul>
+<li>Uncover underlying structure of data by analyzing each feature (feature = unique column in dataset)<br />
+</li>
+<li>Begin to develop an intuition for the data<br />
+</li>
+<li>Develop follow up questions to grow intuition<br />
+</li>
+<li>Uncover relevant/impotant features in the dataset; Similarly, uncover irrelevant features so that a focused analysis can be conducted ignoring these variables<br />
+</li>
+<li>Detect outliers/unusual patterns</li>
+</ul>
+</div>
+<div id="raw-data-preview" class="section level3">
+<h3>Raw Data (Preview)</h3>
+<p><strong>First 10 Rows</strong></p>
+<div style="border: 1px solid #ddd; padding: 5px; overflow-x: scroll; width:100%; ">
+<table class="table table-striped table-hover table-condensed table-responsive" style="font-size: 15px; width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+site_ref
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+trans_num
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+job
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+suffix
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+trans_type
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+trans_date_time
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+trans_date
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+trans_time
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+qty_complete
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+qty_scrapped
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+oper_num
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+a_hrs
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+next_oper
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+emp_num
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+a_$
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+start_time
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+end_time
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+ind_code
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+pay_rate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+qty_moved
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+whse
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+loc
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+user_code
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+close_job
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+issue_parent
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+lot
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+complete_op
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+pr_rate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+job_rate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+shift
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+posted
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+low_level
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+backflush
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+reason_code
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+trans_class
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+ps_num
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+wc
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+awaiting_eop
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+fixovhd
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+varovhd
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+cost_code
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+co_product_mix
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+NoteExistsFlag
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+RecordDateTime
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+RecordDate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+RecordTime
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+RowPointer
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+CreatedBy
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+UpdatedBy
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+CreateDateTime
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+CreateDate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+CreateTime
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+InWorkflow
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+import_doc_id
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+container_num
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+parent_lot
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+parent_serial
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+RESID
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+Uf_DocumentNum
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+X
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+ROCK
+</td>
+<td style="text-align:right;">
+1376545
+</td>
+<td style="text-align:left;">
+P000622503
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+M
+</td>
+<td style="text-align:left;">
+7/2/2019 3:31
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+03:31:00
+</td>
+<td style="text-align:right;">
+20400
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+991
+</td>
+<td style="text-align:right;">
+0.000
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+33335
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+20400
+</td>
+<td style="text-align:left;">
+MAIN
+</td>
+<td style="text-align:left;">
+TRAILER
+</td>
+<td style="text-align:left;">
+LTM
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+1.11123E+14
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+3SH
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+J
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+PPACK
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+7/2/2019 3:35
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+03:35:38
+</td>
+<td style="text-align:left;">
+6FA13797-ABAE-4E88-A2D1-419D3CB40066
+</td>
+<td style="text-align:left;">
+JLCLARKNT-DB1-RK$
+</td>
+<td style="text-align:left;">
+sa
+</td>
+<td style="text-align:left;">
+7/2/2019 3:34
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+03:34:01
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ROCK
+</td>
+<td style="text-align:right;">
+1376546
+</td>
+<td style="text-align:left;">
+6213567
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+7/1/2019 23:42
+</td>
+<td style="text-align:left;">
+7/1/2019
+</td>
+<td style="text-align:left;">
+23:42:00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+4.317
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+C000083
+</td>
+<td style="text-align:left;">
+203.02851
+</td>
+<td style="text-align:left;">
+85320
+</td>
+<td style="text-align:left;">
+14460
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+MAIN
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+LTR
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+47.03
+</td>
+<td style="text-align:left;">
+47.03
+</td>
+<td style="text-align:left;">
+3SH
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+J
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+C8
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+1705.09
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+7/2/2019 4:05
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:05:40
+</td>
+<td style="text-align:left;">
+1B9C7C83-2974-417D-8AE2-E7037D8A53E1
+</td>
+<td style="text-align:left;">
+JLCLARKNT-DB1-RK$
+</td>
+<td style="text-align:left;">
+sa
+</td>
+<td style="text-align:left;">
+7/2/2019 4:04
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:04:00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ROCK
+</td>
+<td style="text-align:right;">
+1376547
+</td>
+<td style="text-align:left;">
+6213567
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:left;">
+7/1/2019 23:42
+</td>
+<td style="text-align:left;">
+7/1/2019
+</td>
+<td style="text-align:left;">
+23:42:00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+4.317
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+85320
+</td>
+<td style="text-align:left;">
+14460
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+MAIN
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+LTC
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+3SH
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+J
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+C8
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+7/2/2019 4:05
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:05:40
+</td>
+<td style="text-align:left;">
+1E39945E-64E8-407E-93DC-85D80B2AEED0
+</td>
+<td style="text-align:left;">
+JLCLARKNT-DB1-RK$
+</td>
+<td style="text-align:left;">
+sa
+</td>
+<td style="text-align:left;">
+7/2/2019 4:04
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:04:01
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ROCK
+</td>
+<td style="text-align:right;">
+1376548
+</td>
+<td style="text-align:left;">
+6213560
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:left;">
+7/1/2019 22:57
+</td>
+<td style="text-align:left;">
+7/1/2019
+</td>
+<td style="text-align:left;">
+22:57:00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+5.150
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+C000053
+</td>
+<td style="text-align:left;">
+213.725
+</td>
+<td style="text-align:left;">
+82620
+</td>
+<td style="text-align:left;">
+14760
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+R
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+MAIN
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+LTR
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+41.5
+</td>
+<td style="text-align:left;">
+41.5
+</td>
+<td style="text-align:left;">
+3SH
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+J
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+C8
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+2034.10
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+7/2/2019 4:10
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:10:40
+</td>
+<td style="text-align:left;">
+4C0FE4BC-D1E1-47C9-B50A-37FB9A7B99BB
+</td>
+<td style="text-align:left;">
+jalicea
+</td>
+<td style="text-align:left;">
+sa
+</td>
+<td style="text-align:left;">
+7/2/2019 4:07
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:07:01
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ROCK
+</td>
+<td style="text-align:right;">
+1376549
+</td>
+<td style="text-align:left;">
+6213560
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+C
+</td>
+<td style="text-align:left;">
+7/1/2019 22:57
+</td>
+<td style="text-align:left;">
+7/1/2019
+</td>
+<td style="text-align:left;">
+22:57:00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+5.150
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+82620
+</td>
+<td style="text-align:left;">
+14760
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+MAIN
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+LTC
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+3SH
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+J
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+C8
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0.00
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+7/2/2019 4:10
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:10:40
+</td>
+<td style="text-align:left;">
+6D42B895-E0A7-4C78-A885-FCD1F0A978BD
+</td>
+<td style="text-align:left;">
+JLCLARKNT-DB1-RK$
+</td>
+<td style="text-align:left;">
+sa
+</td>
+<td style="text-align:left;">
+7/2/2019 4:07
+</td>
+<td style="text-align:left;">
+7/2/2019
+</td>
+<td style="text-align:left;">
+04:07:01
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NULL
+</td>
+<td style="text-align:left;">
+NA
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="summary-of-dataset" class="section level2">
+<h2><strong>Summary of Dataset</strong></h2>
+<p><strong>Feature Architechture:</strong></p>
+<pre><code>## &#39;data.frame&#39;:    10000 obs. of  60 variables:
+##  $ site_ref       : chr  &quot;ROCK&quot; &quot;ROCK&quot; &quot;ROCK&quot; &quot;ROCK&quot; ...
+##  $ trans_num      : int  1376545 1376546 1376547 1376548 1376549 1376550 1376551 1376552 1376553 1376554 ...
+##  $ job            : chr  &quot;P000622503&quot; &quot;6213567&quot; &quot;6213567&quot; &quot;6213560&quot; ...
+##  $ suffix         : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ trans_type     : chr  &quot;M&quot; &quot;R&quot; &quot;C&quot; &quot;R&quot; ...
+##  $ trans_date_time: chr  &quot;7/2/2019 3:31&quot; &quot;7/1/2019 23:42&quot; &quot;7/1/2019 23:42&quot; &quot;7/1/2019 22:57&quot; ...
+##  $ trans_date     : chr  &quot;7/2/2019&quot; &quot;7/1/2019&quot; &quot;7/1/2019&quot; &quot;7/1/2019&quot; ...
+##  $ trans_time     : chr  &quot;03:31:00&quot; &quot;23:42:00&quot; &quot;23:42:00&quot; &quot;22:57:00&quot; ...
+##  $ qty_complete   : num  20400 0 0 0 0 ...
+##  $ qty_scrapped   : int  0 0 0 0 0 0 41 0 0 27 ...
+##  $ oper_num       : int  991 50 50 40 40 40 30 50 50 40 ...
+##  $ a_hrs          : num  0 4.32 4.32 5.15 5.15 ...
+##  $ next_oper      : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ emp_num        : chr  &quot;33335&quot; &quot;C000083&quot; &quot;NULL&quot; &quot;C000053&quot; ...
+##  $ a_$            : chr  &quot;NULL&quot; &quot;203.02851&quot; &quot;NULL&quot; &quot;213.725&quot; ...
+##  $ start_time     : chr  &quot;NULL&quot; &quot;85320&quot; &quot;85320&quot; &quot;82620&quot; ...
+##  $ end_time       : chr  &quot;NULL&quot; &quot;14460&quot; &quot;14460&quot; &quot;14760&quot; ...
+##  $ ind_code       : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ pay_rate       : chr  &quot;NULL&quot; &quot;R&quot; &quot;NULL&quot; &quot;R&quot; ...
+##  $ qty_moved      : num  20400 0 0 0 0 ...
+##  $ whse           : chr  &quot;MAIN&quot; &quot;MAIN&quot; &quot;MAIN&quot; &quot;MAIN&quot; ...
+##  $ loc            : chr  &quot;TRAILER&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ user_code      : chr  &quot;LTM&quot; &quot;LTR&quot; &quot;LTC&quot; &quot;LTR&quot; ...
+##  $ close_job      : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ issue_parent   : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ lot            : chr  &quot;1.11123E+14&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ complete_op    : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ pr_rate        : chr  &quot;NULL&quot; &quot;47.03&quot; &quot;NULL&quot; &quot;41.5&quot; ...
+##  $ job_rate       : chr  &quot;NULL&quot; &quot;47.03&quot; &quot;NULL&quot; &quot;41.5&quot; ...
+##  $ shift          : chr  &quot;3SH&quot; &quot;3SH&quot; &quot;3SH&quot; &quot;3SH&quot; ...
+##  $ posted         : int  1 1 1 1 1 1 1 1 1 1 ...
+##  $ low_level      : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ backflush      : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ reason_code    : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ trans_class    : chr  &quot;J&quot; &quot;J&quot; &quot;J&quot; &quot;J&quot; ...
+##  $ ps_num         : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ wc             : chr  &quot;PPACK&quot; &quot;C8&quot; &quot;C8&quot; &quot;C8&quot; ...
+##  $ awaiting_eop   : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ fixovhd        : num  0 1705 0 2034 0 ...
+##  $ varovhd        : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ cost_code      : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ co_product_mix : chr  &quot;0&quot; &quot;0&quot; &quot;0&quot; &quot;0&quot; ...
+##  $ NoteExistsFlag : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ RecordDateTime : chr  &quot;7/2/2019 3:35&quot; &quot;7/2/2019 4:05&quot; &quot;7/2/2019 4:05&quot; &quot;7/2/2019 4:10&quot; ...
+##  $ RecordDate     : chr  &quot;7/2/2019&quot; &quot;7/2/2019&quot; &quot;7/2/2019&quot; &quot;7/2/2019&quot; ...
+##  $ RecordTime     : chr  &quot;03:35:38&quot; &quot;04:05:40&quot; &quot;04:05:40&quot; &quot;04:10:40&quot; ...
+##  $ RowPointer     : chr  &quot;6FA13797-ABAE-4E88-A2D1-419D3CB40066&quot; &quot;1B9C7C83-2974-417D-8AE2-E7037D8A53E1&quot; &quot;1E39945E-64E8-407E-93DC-85D80B2AEED0&quot; &quot;4C0FE4BC-D1E1-47C9-B50A-37FB9A7B99BB&quot; ...
+##  $ CreatedBy      : chr  &quot;JLCLARKNT\\JLW-DB1-RK$&quot; &quot;JLCLARKNT\\JLW-DB1-RK$&quot; &quot;JLCLARKNT\\JLW-DB1-RK$&quot; &quot;jalicea&quot; ...
+##  $ UpdatedBy      : chr  &quot;sa&quot; &quot;sa&quot; &quot;sa&quot; &quot;sa&quot; ...
+##  $ CreateDateTime : chr  &quot;7/2/2019 3:34&quot; &quot;7/2/2019 4:04&quot; &quot;7/2/2019 4:04&quot; &quot;7/2/2019 4:07&quot; ...
+##  $ CreateDate     : chr  &quot;7/2/2019&quot; &quot;7/2/2019&quot; &quot;7/2/2019&quot; &quot;7/2/2019&quot; ...
+##  $ CreateTime     : chr  &quot;03:34:01&quot; &quot;04:04:00&quot; &quot;04:04:01&quot; &quot;04:07:01&quot; ...
+##  $ InWorkflow     : int  0 0 0 0 0 0 0 0 0 0 ...
+##  $ import_doc_id  : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ container_num  : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ parent_lot     : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ parent_serial  : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ RESID          : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ Uf_DocumentNum : chr  &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; &quot;NULL&quot; ...
+##  $ X              : logi  NA NA NA NA NA NA ...</code></pre>
+<p>[Above] Using the function <em>str()</em> (“structure”), we can get a summary of the dataset, which displays all of the variables as well as their data types. A detailed EDA is conducted for each variable in the <em>Detailed EDA</em> section.</p>
+</div>
+<div id="follow-upopen-items" class="section level2">
+<h2><strong>Follow-up/Open Items</strong></h2>
+<ol style="list-style-type: decimal">
+<li>Verify Relevant Features with JLC</li>
+<li>Variable Specific Questions [Detailed EDA Section]<br />
+</li>
+<li>General Data Set Questions</li>
+<li>Determine analysis options with this dataset</li>
+</ol>
+<p><strong><em>General Questions:</em></strong></p>
+<p>What is this dataset currently used for?<br />
+What is the current data recording process?<br />
+What machine is this data set referring to? Is there a variable in this dataset that indicates machine?</p>
+<p><strong><em>Potential Analysis Opportunities (Initial Ideas):</em></strong><br />
+<em>Note: Will need to asses the feasibility of these analyses based on data availability and integrity.</em></p>
+<ul>
+<li><em>Pricing Optimization</em><br />
+</li>
+<li><em>Facility Layout Optimization</em><br />
+</li>
+<li><em>Yield Analysis</em><br />
+</li>
+<li><em>Processing Rate Analysis</em><br />
+</li>
+<li><em>Capacity Planning Model</em><br />
+</li>
+<li><em>Production Scheduling</em><br />
+</li>
+<li><em>Raw Material Analysis (Purchasing)</em></li>
+</ul>
+<hr />
+</div>
+<div id="detailed-eda---part-1" class="section level2">
+<h2><strong>Detailed EDA - Part 1</strong></h2>
+<p><strong>Procedure:</strong> Analyze each feature (aka column) in the transaction dataset. We are interested in the following:</p>
+<ul>
+<li>Data Type</li>
+<li>Zeros/Infinite Values/NA</li>
+<li>Missing Values</li>
+<li>Basic Trends</li>
+<li>Unique/repeated values</li>
+<li>Understanding each feature’s purpose</li>
+</ul>
+<p>Each feature section has an obervations field as well as follow up questions that need to be answered to better our understanding of the data.</p>
+<div id="feature-01-site_ref-site_ref" class="section level3">
+<h3><strong>Feature 01 | site_ref/ site_ref</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   site      n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 ROCK  10000</code></pre>
+<p><strong>Observations:</strong><br />
+The site feature only contains Rockford (ROCK) entries. This feature is likely meaningless for future analysis, <em>unless</em> transaction data combines multiple locations.</p>
+<p><strong>Questions:</strong><br />
+Will transaction data sets ever contain multiple locations?<br />
+Do the different facilities of JLC have similar operations, or are they completely unique?<br />
+Is there a feature in Syteline that distinguishes between departments/line operation? (“job column -&gt; FAB significance”)</p>
+<p><strong>JLC variable description:</strong></p>
+<!-- This script needs to be duplicated throughout the RMD where needed, changing the data-store="" to a unique number -->
+<textarea data-store="2.28.20.1" rows="5" cols="107" placeholder="enter comments here"></textarea>
+<!-- This script needs to be included only once in the entire RMD -->
+<script>
+
+    $(document).ready (function () {
+      $("*[data-store]").each(function () {
+        $(this).val(localStorage.getItem("item-" + $(this).attr("data-store")));
+      });
+
+      $("*[data-store]").on("keyup", function (itm) {
+        localStorage.setItem ("item-" + $(this).attr("data-store"), $(this).val());
+      })
+    })
+
+</script>
+</div>
+<div id="feature-02-trans_num" class="section level3">
+<h3><strong>Feature 02 | trans_num</strong></h3>
+<pre><code>## # A tibble: 10,000 x 2
+##    trans_num     n
+##    &lt;fct&gt;     &lt;int&gt;
+##  1 1376545       1
+##  2 1376546       1
+##  3 1376547       1
+##  4 1376548       1
+##  5 1376549       1
+##  6 1376550       1
+##  7 1376551       1
+##  8 1376552       1
+##  9 1376553       1
+## 10 1376554       1
+## # ... with 9,990 more rows</code></pre>
+<p><strong>Observations:</strong><br />
+It looks like our 2nd feature, trans_num, is <strong>unique in each row of the dataset</strong>. This means that each row in the dataset likely represents a unique transaction at the Rockford facility.</p>
+<p><strong>Questions:</strong><br />
+What defines a transaction in the context of this dataset?<br />
+How are transactions recorded into the system? Human-inputted?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.2" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-03-job" class="section level3">
+<h3><strong>Feature 03 | job</strong></h3>
+<pre><code>## # A tibble: 616 x 2
+##    job            n
+##    &lt;fct&gt;      &lt;int&gt;
+##  1 NULL        2917
+##  2 FAB0001772   237
+##  3 FAB0001795   116
+##  4 6213496       94
+##  5 FAB0001940    93
+##  6 FAB0001797    84
+##  7 FAB0001798    74
+##  8 FAB0001777    69
+##  9 6213546       62
+## 10 FAB0001796    59
+## # ... with 606 more rows</code></pre>
+<p><strong>Observations:</strong><br />
+There are many NULL values in the job feature. There also appears to be a prefix (i.e “FAB”) attached to some jobs.</p>
+<p><strong>Questions:</strong><br />
+Need clarification on these codified values (i.e “FAB”).<br />
+Why is there a significant number of NULL values in this feature?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.3" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-04-suffix" class="section level3">
+<h3><strong>Feature 04 | suffix</strong></h3>
+<pre><code>## # A tibble: 5 x 2
+##   suffix     n
+##   &lt;chr&gt;  &lt;int&gt;
+## 1 0       5883
+## 2 NULL    2585
+## 3 1       1221
+## 4 2        267
+## 5 3         44</code></pre>
+<p><strong>Observations:</strong><br />
+The most common suffix is 0, however there are many NULL values as well too. Included values range from 0 - 3. Significance of suffix still unknown.</p>
+<p><strong>Questions:</strong><br />
+Need clarification on suffix meaning/significance.<br />
+Why is there a significant number of NULL values in this feature?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.4" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-05-trans_type" class="section level3">
+<h3><strong>Feature 05 | trans_type</strong></h3>
+<pre><code>## # A tibble: 5 x 2
+##   trans_type     n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 I           2917
+## 2 M           2281
+## 3 R           2191
+## 4 C           2189
+## 5 S            422</code></pre>
+<p><strong>Observations:</strong><br />
+trans_type categories are: I, M, R, C, S; trans_type “I” being the most common. Will need more clarification on the meaning of trans_type.</p>
+<p><strong>Questions:</strong><br />
+Need clarification on trans_type meaning/significance.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.5" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-06-07-08-trans_date_time-trans_date-trans_time" class="section level3">
+<h3><strong>Feature 06, 07, 08 | trans_date_time, trans_date, trans_time</strong></h3>
+<pre><code>## # A tibble: 74 x 2
+##    dat            n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 08/14/2019   635
+##  2 07/23/2019   626
+##  3 08/05/2019   571
+##  4 07/02/2019   503
+##  5 07/22/2019   493
+##  6 08/29/2019   474
+##  7 08/22/2019   466
+##  8 07/03/2019   422
+##  9 10/17/2019   368
+## 10 08/13/2019   344
+## # ... with 64 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 6: trans_date trans_time-1.png" width="672" /></p>
+<pre><code>## # A tibble: 5 x 2
+##   mon       n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 Aug    4090
+## 2 Jul    2572
+## 3 Sep    1967
+## 4 Oct    1364
+## 5 Jun       7</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 6: trans_date trans_time-2.png" width="672" /></p>
+<pre><code>## # A tibble: 24 x 2
+##    time      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 07     1369
+##  2 00     1289
+##  3 15     1006
+##  4 23      724
+##  5 06      675
+##  6 05      455
+##  7 16      405
+##  8 08      393
+##  9 10      386
+## 10 13      365
+## # ... with 14 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 6: trans_date trans_time-3.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The first transaction in the dataset is on 2019-06-25 05:45:00. The last transaction in the dataset is on 2019-10-24 01:17:00 . August has the most “activity” (transactions) out of the 5 months in the dataset. We would need to look at data for the entire year to make any real monthly comparisons.<br />
+If interpreted correctly, 7AM is when the most transactions occur. In fact, the hours of the day where the majority of transactions occur is during 7, 15, 23/24 -&gt; these could be shift changes.</p>
+<p>There are clear gaps from a time perspective in the data. Weekends could explain some of these gaps, but there is overall a lot of variance in the number of transactions per day.</p>
+<p><strong>Note:</strong> trans_date was the only column sourced from the ERP system. The format of the data was ‘date time’. We split date and time amnually to create the other 2 trans_ columns.</p>
+<p><strong>Questions:</strong><br />
+What are some factors that influence transaction frequency per day? Weekends? Equipment Down? Actual Demand?<br />
+Why are there frequent gaps in transaction dates (see visual)? How accurate are the transaction dates? Are values scanned as the process flows, or all at the end?<br />
+When do shifts start and end?<br />
+How do these dates and times relate to <em>RecordDate</em> and <em>CreateDate</em> features?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.6" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-09-qty_complete" class="section level3">
+<h3><strong>Feature 09 | qty_complete</strong></h3>
+<pre><code>## # A tibble: 1,675 x 2
+##    qty_complete     n
+##           &lt;dbl&gt; &lt;int&gt;
+##  1            0  6782
+##  2        14000   155
+##  3         1296   106
+##  4        21760    50
+##  5            1    48
+##  6        15120    43
+##  7        18360    43
+##  8        20400    37
+##  9         1760    35
+## 10        60480    33
+## # ... with 1,665 more rows</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## -172725       0       0    3742    1287  662240</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 9: qty_complete-1.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/Feature 9: qty_complete-2.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The majority of transactions have 0 values for qty_complete. There are repeated values, but also large amount of unique values. There are negative values present. <strong>Feature meaning still unclear.</strong></p>
+<p><strong>Questions:</strong><br />
+Need further clarification.<br />
+Do certain transactions produce certain qty_complete values?<br />
+What is the unit of measurement for qty_complete?<br />
+Are qty_complete values given only to transactions that complete a “job”?<br />
+What does a negative qty_complete value mean?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.9" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-10-qty_scrapped" class="section level3">
+<h3><strong>Feature 10 | qty_scrapped</strong></h3>
+<pre><code>## # A tibble: 326 x 2
+##    qty_scrapped     n
+##           &lt;int&gt; &lt;int&gt;
+##  1            0  8438
+##  2            1    79
+##  3            2    71
+##  4          100    64
+##  5           50    52
+##  6          200    49
+##  7            3    42
+##  8           10    37
+##  9           20    36
+## 10            4    31
+## # ... with 316 more rows</code></pre>
+<pre><code>##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##  -1000.00      0.00      0.00     37.87      0.00 165728.00</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 10: qty_scrapped-1.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/Feature 10: qty_scrapped-2.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+Most observations in the dataset have a qty_scrapped value of 0. There are a high frequency of certain scrap values as well. <strong>Will need further clarification behind the meaning of negative qty_scrap transactions compared to positive qty_scrap transactions.</strong></p>
+<p><strong>Questions:</strong><br />
+Need further clarification. Why are there negative AND positive scrap values?<br />
+What are the units of measurement?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.10" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-11-oper_num" class="section level3">
+<h3><strong>Feature 11 | oper_num</strong></h3>
+<pre><code>## # A tibble: 14 x 2
+##    oper_num     n
+##       &lt;int&gt; &lt;int&gt;
+##  1        0  2917
+##  2       20  2525
+##  3       10   869
+##  4      991   840
+##  5       30   812
+##  6       40   632
+##  7       60   574
+##  8       50   524
+##  9       70   237
+## 10       80    44
+## 11       90    17
+## 12      120     6
+## 13      110     2
+## 14      100     1</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 11: oper_num-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+This is a lot of different oper_num’s - assuming that each one represents a different operator. There is also a possibility that oper_num has to do with a <em>specific operation, as opposed to a human operator</em> - but this will require further follow-up to determine. 0 is the most common oper_num. Excluding 0, the most common oper_num is 20.</p>
+<p><strong>Questions:</strong><br />
+Need further clarification.<br />
+What is the significance of oper_num 991? Other numbers are multiples of 10.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.11" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-12-a_hrs" class="section level3">
+<h3><strong>Feature 12 | a_hrs</strong></h3>
+<pre><code>## # A tibble: 699 x 2
+##     a_hrs     n
+##     &lt;dbl&gt; &lt;int&gt;
+##  1  0      2345
+##  2  0.017   153
+##  3  0.2     124
+##  4  8        78
+##  5  0.3      76
+##  6  8.05     73
+##  7  8.03     72
+##  8  0.1      66
+##  9 -0.2      62
+## 10  8.07     58
+## # ... with 689 more rows</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## -23.900   0.000   1.083   2.831   6.071  23.983</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 12: a_hrs-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The most common a_hrs values are equal to 0. Values are repreated, but there are a large number of unique entries. The bounds of this feature are -24, +24, which leads us to believe that this feature is representative of time in some form.</p>
+<p><strong>Questions:</strong><br />
+Need further clarification.<br />
+Why are there negative a_hrs?<br />
+Is a_hrs a time feature?<br />
+What does the formatting of this feature represent?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.12" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-13-next_oper" class="section level3">
+<h3><strong>Feature 13 | next_oper</strong></h3>
+<pre><code>## # A tibble: 14 x 2
+##    next_oper     n
+##    &lt;chr&gt;     &lt;int&gt;
+##  1 NULL       7109
+##  2 991        1481
+##  3 30          327
+##  4 20          264
+##  5 40          258
+##  6 50          220
+##  7 60          188
+##  8 70          103
+##  9 80           24
+## 10 100           9
+## 11 90            8
+## 12 130           6
+## 13 120           2
+## 14 110           1</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 13: next_oper-1.png" width="672" /></p>
+<pre><code>##    oper_num next_oper diff
+## 1       991      NULL   NA
+## 2        50      NULL   NA
+## 3        50      NULL   NA
+## 4        40      NULL   NA
+## 5        40      NULL   NA
+## 6        40      NULL   NA
+## 7        30        40   10
+## 8        50      NULL   NA
+## 9        50      NULL   NA
+## 10       40        50   10</code></pre>
+<p><strong>Observations:</strong><br />
+Most of the transactions in the dataset have a value of NULL for next_oper, second being 991, and there are many transactions with other values. Similar, if not identical categories to <em>oper_num</em> except for 0. <em>next_oper</em> appears to be the action immediately following <em>oper_num</em>. 991 could be the final state of operation (confirmation needed).</p>
+<p><strong>Questions:</strong><br />
+Confirm the relationship between <em>oper_num</em> and <em>next_oper</em>. Are <em>oper_num</em> and <em>next_oper</em> people or actions?<br />
+Does 991 signify the end of something?<br />
+What about NULL?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.13" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-14-emp_num" class="section level3">
+<h3><strong>Feature 14 | emp_num</strong></h3>
+<pre><code>## # A tibble: 236 x 2
+##    emp_num     n
+##    &lt;chr&gt;   &lt;int&gt;
+##  1 NULL     2528
+##  2 26511     324
+##  3 10396     202
+##  4 33303     181
+##  5 33383     172
+##  6 C000083   172
+##  7 16783     169
+##  8 C000082   162
+##  9 C000051   158
+## 10 C000081   150
+## # ... with 226 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 14: emp_num-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The <em>emp_num</em> feature has lots of NULL values, some type of numerical coding systems, as well as prefixes (i.e “C”) attached to it’s numerics.</p>
+<p><strong>Questions:</strong><br />
+Further clarification needed.<br />
+What is the significance of the coded values?<br />
+Whay are there a large amount of NULL values?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.14" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-15-a_" class="section level3">
+<h3><strong>Feature 15 | a_$</strong></h3>
+<pre><code>## # A tibble: 3,109 x 2
+##      `a_$`     n
+##      &lt;dbl&gt; &lt;int&gt;
+##  1  NA      4131
+##  2   0       486
+##  3   4.61     41
+##  4  -5.41     32
+##  5   0.391    29
+##  6  -5.26     23
+##  7   3.83     17
+##  8 129.       13
+##  9 217.       12
+## 10 -46.1      11
+## # ... with 3,099 more rows</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA&#39;s 
+## -519.09   16.61   77.60  111.52  206.92  956.07    4131</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/a_$-1.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/a_$-2.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The most common <em>a_<span class="math inline">\(* is NULL. The next most common is 0.0000000. There are some repeating *a_\)</span></em>; however it seems like this feature is rather unique per observation. Negative values present.</p>
+<p><strong>Questions:</strong><br />
+Further clarification needed.<br />
+Is this some type of costing measure? If so, need more context.<br />
+Why are there a large amount of NULL? If this is indeed a costing feature, NULL are problematic.<br />
+What is the significance of the negative values?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.15" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-16-start_time" class="section level3">
+<h3><strong>Feature 16 | start_time</strong></h3>
+<pre><code>## # A tibble: 1,180 x 2
+##    start_time     n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 NULL        2885
+##  2 25500         86
+##  3 25560         80
+##  4 82620         69
+##  5 25200         68
+##  6 54300         67
+##  7 82560         65
+##  8 24960         61
+##  9 53940         61
+## 10 25080         60
+## # ... with 1,170 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/start_time-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The most common value for start time is NULL. The histogram shows an interesting pattern that is trimodal in nature (3 high frequency peaks). This pattern is strikingly similar to feature 8 <em>trans_time</em>. There could be some relationship between the 2 variables.</p>
+<p><strong>Questions:</strong><br />
+How does <em>start_time</em> relate to <em>end_time</em>?<br />
+How does <em>start_time</em> relate to <em>trans_time</em>?<br />
+What do the values represent? Should they be formatted HH:MM:SS?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.16" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-17-end_time" class="section level3">
+<h3><strong>Feature 17 | end_time</strong></h3>
+<pre><code>## # A tibble: 1,179 x 2
+##    end_time     n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 NULL      2885
+##  2 53700      185
+##  3 53760      168
+##  4 53880      154
+##  5 53820      148
+##  6 54000      129
+##  7 53640      125
+##  8 53940      121
+##  9 82500      108
+## 10 25200       95
+## # ... with 1,169 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/end_time-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The most common value for end time is NULL. Again, the trimodal pattern emerges, similar to <em>start_time</em>, at relatively similar values.</p>
+<p><strong>Questions:</strong><br />
+What is the relationship between <em>start_time</em> and <em>end_time</em>?<br />
+What does the formatting represent?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.17" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-18-ind_code" class="section level3">
+<h3><strong>Feature 18 | ind_code</strong></h3>
+<pre><code>## # A tibble: 25 x 2
+##    ind_code     n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 NULL      7083
+##  2 1          802
+##  3 4          455
+##  4 5          229
+##  5 177        205
+##  6 16         181
+##  7 38         151
+##  8 169        112
+##  9 2          108
+## 10 28          94
+## # ... with 15 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 18: ind_code-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The most common ind_code is NULL, meaning not all transactions have ind_codes. After excluding NULL values of ind_code, 1 is the most commonly used ind_code. This feature appears to be of factor type. All numerical values except for QC/qc.</p>
+<p><strong>Questions:</strong><br />
+Will need to follow up on exactly what ind_codes means (indicator?).<br />
+What does QC/qc represent? Quality Control?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.18" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-19-pay_rate" class="section level3">
+<h3><strong>Feature 19 | pay_rate</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   pay_rate     n
+##   &lt;chr&gt;    &lt;int&gt;
+## 1 R         5531
+## 2 NULL      4469</code></pre>
+<p><strong>Observations:</strong><br />
+This feature appears to have no explanatory variable. There are only 2 levels to the <em>pay_rate</em> feature, and one of those levels is NULL. Recommend ignoring or deleting this feature from the dataset as it likely provides no explanatory power for any other feature.</p>
+<p><strong>Questions:</strong><br />
+Pay rate for operators or for customers?<br />
+What does “R” mean? Regular? What about NULL?<br />
+Could there be more values (other than R) if we expanded the dataset?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.19" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-20-qty_moved" class="section level3">
+<h3><strong>Feature 20 | qty_moved</strong></h3>
+<pre><code>## # A tibble: 1,675 x 2
+##    qty_moved     n
+##        &lt;dbl&gt; &lt;int&gt;
+##  1         0  6783
+##  2     14000   155
+##  3      1296   106
+##  4     21760    50
+##  5         1    48
+##  6     15120    43
+##  7     18360    43
+##  8     20400    37
+##  9      1760    35
+## 10     60480    33
+## # ... with 1,665 more rows</code></pre>
+<pre><code>##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+## -172725       0       0    3741    1284  662240</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 20: qty_moved-1.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/Feature 20: qty_moved-2.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/Feature 20: qty_moved-3.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The <em>qty_moved</em> feature does not have NULL values, but rather has 0 values. This is by far the most common value. There also appears to be some negative values in the <em>qty_moved</em> feature.</p>
+<p><strong>Questions:</strong><br />
+Further clarification needed on <em>qty_moved</em>.<br />
+Why are there negative values?<br />
+Quantity moved where?<br />
+Units of measurement?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.20" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-21-whse" class="section level3">
+<h3><strong>Feature 21 | whse</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   whse      n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 MAIN   6951
+## 2 NULL   3049</code></pre>
+<p><strong>Observations:</strong><br />
+This feature can likely be deleted. The whse feature only has 2 levels, one of which is NULL. Most of the whse value = “MAIN”. (Main warehouse?)</p>
+<p><strong>Questions:</strong><br />
+Further clarification needed. What does whse mean? (Warehouse?)<br />
+Are there other warehouses at JLC?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.21" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-22-loc" class="section level3">
+<h3><strong>Feature 22 | loc</strong></h3>
+<pre><code>## # A tibble: 17 x 2
+##    loc          n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 NULL      8250
+##  2 STL-11     611
+##  3 FABFG      488
+##  4 TRAILER    325
+##  5 NORTH      138
+##  6 PLAST       83
+##  7 STOCK       27
+##  8 SOUTH       25
+##  9 TS          24
+## 10 2ABAY-01    17
+## 11 FAB          4
+## 12 trailer      3
+## 13 2AA-20       1
+## 14 2ABAY-04     1
+## 15 KC           1
+## 16 STl-11       1
+## 17 Trailer      1</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 22: loc-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+Most transactions have a loc = NULL, however some transactions do have values for LOC. Most common STL-11. <em>loc</em> could be indicate department of transaction, but need confirmation. STL-11 is the most common <em>loc</em>.</p>
+<p><strong>Questions:</strong><br />
+Further clarification needed.<br />
+Could this be department locations?<br />
+Similar entires that are slightly different? (i.e. TRAILER vs Trailer vs. trailer)</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.22" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-23-user_code" class="section level3">
+<h3><strong>Feature 23 | user_code</strong></h3>
+<pre><code>## # A tibble: 10 x 2
+##    user_code     n
+##    &lt;chr&gt;     &lt;int&gt;
+##  1 LTI        2585
+##  2 LTC        2189
+##  3 LTM        1904
+##  4 LTR        1624
+##  5 JG          593
+##  6 LTS         417
+##  7 LTJ         402
+##  8 DS          235
+##  9 AG           44
+## 10 PSL           7</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 23: user_code-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+Most <em>user_code</em> values are “LTI”. There are no NULL values for any transactions for the <em>user_code</em> feature, which makes one believe it is likely an important feature.<br />
+4 of the <em>user_code</em> values are used considerably more than any other (LTR, LTM, LTI, LTC).</p>
+<p><strong>Questions:</strong><br />
+Will need to follow up on meaning behind the user_code feature. Need code descriptions.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.23" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-24-close_job" class="section level3">
+<h3><strong>Feature 24 | close_job</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   close_job     n
+##       &lt;int&gt; &lt;int&gt;
+## 1         0 10000</code></pre>
+<p><strong>Observations:</strong><br />
+The <em>close_job</em> feature has only 0 values. For this reason, we will likely want to delete or completely ignore this feature for any analysis.</p>
+<p><strong>Questions:</strong><br />
+Is this input currently utilized correctly?<br />
+If updated with required values, would there be more insight gained?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.24" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-25-issue_parent" class="section level3">
+<h3><strong>Feature 25 | issue_parent</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   issue_parent     n
+##          &lt;int&gt; &lt;int&gt;
+## 1            0  9894
+## 2            1   106</code></pre>
+<p><strong>Observations:</strong><br />
+Most values for lot are equal to 0, however there are some lot values equal to 1. In general, only about 1% of transactions in this dataset have a lot value = 1.</p>
+<p><strong>Questions:</strong><br />
+Valuable explanatory variable with only 1% of lot values non-zero?<br />
+What is the significance of the 1 numerical?<br />
+Further clarification needed.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.25" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-26-lot" class="section level3">
+<h3><strong>Feature 26 | lot</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   lot             n
+##   &lt;chr&gt;       &lt;int&gt;
+## 1 NULL         8536
+## 2 1.11123E+14  1464</code></pre>
+<p><strong>Observations:</strong><br />
+Most values for <em>lot</em> are equal to NULL, however there are some lot values equal to 1.11123E+14 (these are the only 2 levels). Likely not a very useful feature.</p>
+<p><strong>Questions:</strong><br />
+What is the significance of the 1.11123E+14 numerical?<br />
+Further clarification needed.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.26" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-27-complete_op" class="section level3">
+<h3><strong>Feature 27 | complete_op</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   complete_op     n
+##         &lt;int&gt; &lt;int&gt;
+## 1           0  9989
+## 2           1    11</code></pre>
+<p><strong>Observations:</strong><br />
+Most complete_op values = 0, however 11 out of the total 10,000 transactions have a value = 1.</p>
+<p><strong>Questions:</strong><br />
+Need more clarification.<br />
+Likely an irrelevant variable with only 11 observations differntiating from 0.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.27" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-28-pr_rate" class="section level3">
+<h3><strong>Feature 28 | pr_rate</strong></h3>
+<pre><code>## # A tibble: 47 x 2
+##    pr_rate     n
+##    &lt;chr&gt;   &lt;int&gt;
+##  1 NULL     4470
+##  2 23.267    454
+##  3 19.209    441
+##  4 41.5      385
+##  5 47.03     324
+##  6 19.161    259
+##  7 26.28     256
+##  8 23.027    247
+##  9 79.08     246
+## 10 79.58     214
+## # ... with 37 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 28: pr_rate-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+Most transactions have a NULL value for <em>pr_rate</em>. However, there are many instances of non-nULL values for <em>pr_rate</em>. Values range from 0 to 100, with the distribution concentrated around 25. Seemingly a costing feature of some kind, we should consider how this feature is derived and how it relates to other features.</p>
+<p><strong>Questions:</strong><br />
+Will need to follow up on the meaning of the pr_rate feature.<br />
+Identical to <em>job_rate</em> feature?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.28" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-29-job_rate" class="section level3">
+<h3><strong>Feature 29 | job_rate</strong></h3>
+<pre><code>## # A tibble: 46 x 2
+##    job_rate     n
+##    &lt;chr&gt;    &lt;int&gt;
+##  1 NULL      4470
+##  2 19.161     669
+##  3 23.027     555
+##  4 41.5       385
+##  5 27.056     347
+##  6 47.03      324
+##  7 17.174     254
+##  8 79.08      245
+##  9 79.58      214
+## 10 31.507     209
+## # ... with 36 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 29: job_rate-1.png" width="672" /></p>
+<pre><code>##    pr_rate job_rate diff
+## 1     NULL     NULL   NA
+## 2    47.03    47.03    0
+## 3     NULL     NULL   NA
+## 4     41.5     41.5    0
+## 5     NULL     NULL   NA
+## 6     80.4     80.4    0
+## 7     NULL     NULL   NA
+## 8    47.03    47.03    0
+## 9     NULL     NULL   NA
+## 10    NULL     NULL   NA</code></pre>
+<pre><code>## [1] &quot;0.85 rate match&quot;</code></pre>
+<p><strong>Observations:</strong><br />
+The <em>job_rate</em> feature contains 46 unique values, including NULL values and values = 0. For 85% of our transactions - <em>job_rate</em> is equal to <em>pr_rate</em>, with only slight discrepancies when they do occur..</p>
+<p><strong>Questions:</strong><br />
+Will need to follow up on the meaning of the <em>job_rate</em> feature and it’s relation to <em>pr_rate</em>.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.29" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-30-shift" class="section level3">
+<h3><strong>Feature 30 | shift</strong></h3>
+<pre><code>## # A tibble: 4 x 2
+##   shift     n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 1SH    4858
+## 2 2SH    3290
+## 3 3SH    1513
+## 4 NULL    339</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 30: shift-1.png" width="672" /></p>
+<p><strong>Observations</strong><br />
+There are some NULL values within the <em>shift</em> feature, however most transactions do have non-NULL values.<br />
+“1SH” is the most common value for <em>shift</em>. “2SH” and “3SH” are the only other categories.</p>
+<p><strong>Questions:</strong><br />
+Could there be more than 3 shifts? (Say, Weekend?)<br />
+What do the nullified values represent in terms of a shift?<br />
+What are the time frames of each shift?<br />
+Why does 1st shift have the most transactions? Does JLC run around the clock?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.30" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-31-posted" class="section level3">
+<h3><strong>Feature 31 | posted</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   posted     n
+##    &lt;int&gt; &lt;int&gt;
+## 1      1 10000</code></pre>
+<p><strong>Observations:</strong><br />
+All transactions have <em>posted</em> = 1. Consider deleting or ignorning this variable unless additional context is given.</p>
+<p><strong>Questions:</strong><br />
+Verify relevancy Is this feature currently utilized? If so, what does <em>posted</em> represent?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.31" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-32-low_level" class="section level3">
+<h3><strong>Feature 32 | low_level</strong></h3>
+<pre><code>## # A tibble: 4 x 2
+##   low_level     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 0          6064
+## 2 NULL       2585
+## 3 1          1302
+## 4 2            49</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 32: low_level-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+<em>low_level</em> has some NULL values, but also appears to be a factor feature. The most common value for <em>low_level</em> is 0.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.32" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-33-backflush" class="section level3">
+<h3><strong>Feature 33 | backflush</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   backflush     n
+##       &lt;int&gt; &lt;int&gt;
+## 1         0 10000</code></pre>
+<p><strong>Observations:</strong><br />
+All transactions have <em>backflush</em> = 0. Consider deleting or ignorning this variable unless additional context is given.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.33" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-34-reason_code" class="section level3">
+<h3><strong>Feature 34 | reason_code</strong></h3>
+<pre><code>## # A tibble: 62 x 2
+##    reason_code     n
+##    &lt;chr&gt;       &lt;int&gt;
+##  1 NULL         8439
+##  2 P11           285
+##  3 130           176
+##  4 131           173
+##  5 F01           149
+##  6 109           138
+##  7 306            67
+##  8 F03            52
+##  9 P02            50
+## 10 96             48
+## # ... with 52 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 34: reason_code-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+There are 60+ different unique <em>reason_code</em> values, including NULL. The most common value for <em>reason_code</em> is NULL, with P11 being the 2nd most common value. There appears to be a prefix attached to some of the <em>reason_code</em> values.</p>
+<p><strong>Questions:</strong><br />
+What does <em>reason_code</em> signify?<br />
+What do the prefixs indicate?<br />
+Further clarification needed.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.34" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-35-trans_class" class="section level3">
+<h3><strong>Feature 35 | trans_class</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   trans_class     n
+##   &lt;chr&gt;       &lt;int&gt;
+## 1 J           10000</code></pre>
+<p><strong>Observations:</strong><br />
+All transactions have trans_value = J. Consider deleting or ignorning this variable unless additional context is given.</p>
+<p><strong>Questions:</strong><br />
+Verify relevancy, what does “J” represent?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.35" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-36-ps_num" class="section level3">
+<h3><strong>Feature 36 | ps_num</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   ps_num     n
+##   &lt;chr&gt;  &lt;int&gt;
+## 1 NULL   10000</code></pre>
+<p><strong>Observations:</strong><br />
+All transactions have ps_num = NULL. Consider deleting or ignorning this variable unless additional context is given.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.36" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-37-wc" class="section level3">
+<h3><strong>Feature 37 | wc</strong></h3>
+<pre><code>## # A tibble: 114 x 2
+##    wc        n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 NULL   2927
+##  2 STRAP   916
+##  3 C8      424
+##  4 C5      401
+##  5 PPACK   345
+##  6 C5A     338
+##  7 MPACK   337
+##  8 C8A     299
+##  9 WAX     285
+## 10 P10A1   236
+## # ... with 104 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 37: wc-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+The most common value for <em>wc</em> is NULL. The 2nd most common value of <em>wc</em> = STRAP. There are 114 unique values for the <em>wc</em> feature, including NULL values.</p>
+<p><strong>Questions:</strong><br />
+Need further clarification/description.<br />
+What does <em>wc</em> stand for? Some material type?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.37" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-38-awaiting_eop" class="section level3">
+<h3><strong>Feature 38 | awaiting_eop</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   awaiting_eop     n
+##          &lt;int&gt; &lt;int&gt;
+## 1            0 10000</code></pre>
+<p><strong>Observations:</strong><br />
+Every transaction has a <em>awaiting_eop</em> value = 0. Consider deleting or ignorning this variable unless additional context is given.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.38" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-39-fixovhd" class="section level3">
+<h3><strong>Feature 39 | fixovhd</strong></h3>
+<pre><code>## # A tibble: 1,863 x 2
+##    fixovhd     n
+##      &lt;dbl&gt; &lt;int&gt;
+##  1    0     7059
+##  2    0.28    28
+##  3    0.8     25
+##  4    3.3     25
+##  5    3.43    18
+##  6  -49.5     11
+##  7  -33.0     11
+##  8  750.      11
+##  9    0.66    10
+## 10    4.95    10
+## # ... with 1,853 more rows</code></pre>
+<pre><code>##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+## -4816.33     0.00     0.00   130.69     8.26  7351.37</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 39: fixovhd-1.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/Feature 39: fixovhd-2.png" width="672" /><img src="JobTran_Mst_FINAL_files/figure-html/Feature 39: fixovhd-3.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+Most common <em>fixovhd</em> value = 0. Other fixovhd values are fairly unique, but they do repeat. There are also negative <em>fixovhd</em> values.</p>
+<p><strong>Questions:</strong><br />
+Need further clarification.<br />
+Why are there variables with both positive and negative values?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.39" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-40-varovhd" class="section level3">
+<h3><strong>Feature 40 | varovhd</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   varovhd     n
+##     &lt;int&gt; &lt;int&gt;
+## 1       0 10000</code></pre>
+<p><strong>Observations:</strong><br />
+All transaction have a value of varovhd = 0. Seemingly irrelevant, but curious how this may relate (as a feature) to <em>fixovhd</em>.</p>
+<p><strong>Questions:</strong><br />
+Verify relevancy.<br />
+Does <em>varovhd</em> relate to <em>fixovhd</em> in any sense? There is no evidence to suggest this other than similar names.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.40" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-41-cost_code" class="section level3">
+<h3><strong>Feature 41 | cost_code</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   cost_code     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 NULL       9997
+## 2 SHP           3</code></pre>
+<p><strong>Observations:</strong><br />
+Most <em>cost_code</em> values are equal to NULL. There are a 3 transactions with <em>cost_code</em> = SHP.</p>
+<p><strong>Questions:</strong> Verify relevancy.<br />
+Underutilized variable?<br />
+What does “SHP” stand for?</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.41" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-42-co_product_mix" class="section level3">
+<h3><strong>Feature 42 | co_product_mix</strong></h3>
+<pre><code>## # A tibble: 2 x 2
+##   co_product_mix     n
+##   &lt;chr&gt;          &lt;int&gt;
+## 1 0               7415
+## 2 NULL            2585</code></pre>
+<p><strong>Observations:</strong><br />
+The <em>co_product_mix</em> feature only takes on 2 values: 0 or NULL. 0 is more common in the transactions, however it is unclear if there is any difference between a 0 value and a NULL value.</p>
+<p><strong>Questions:</strong><br />
+IS there a difference between 0 and NULL values?<br />
+Take as binary values (0 = 1, NULL = 0)?<br />
+Need further clarification.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.42" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-43-noteexistsflag" class="section level3">
+<h3><strong>Feature 43 | NoteExistsFlag</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   NoteExistsFlag     n
+##            &lt;int&gt; &lt;int&gt;
+## 1              0 10000</code></pre>
+<p><strong>Observations:</strong><br />
+All transactions have <em>recordate </em>NoteExistsFlag* = 0. Suspect this is a flag that indicates if a comment has been made for this transaction. Apparently underutilized feature. Consider deleting or ignorning this variable unless additional context is given.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.43" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-44-45-46-recorddatetime-recorddate-recordtime" class="section level3">
+<h3><strong>Feature 44, 45, 46 | RecordDateTime, RecordDate, RecordTime</strong></h3>
+<pre><code>## # A tibble: 45 x 2
+##    dat            n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 08/14/2019   643
+##  2 07/23/2019   642
+##  3 08/05/2019   577
+##  4 07/22/2019   497
+##  5 07/02/2019   493
+##  6 08/29/2019   472
+##  7 07/03/2019   468
+##  8 08/22/2019   422
+##  9 08/15/2019   413
+## 10 10/17/2019   359
+## # ... with 35 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 44 45 46: RecordDate RecordTime-1.png" width="672" /></p>
+<pre><code>## # A tibble: 4 x 2
+##   mon       n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 Aug    4091
+## 2 Jul    2574
+## 3 Sep    1971
+## 4 Oct    1364</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 44 45 46: RecordDate RecordTime-2.png" width="672" /></p>
+<pre><code>## # A tibble: 24 x 2
+##    time      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 15     1808
+##  2 07     1160
+##  3 23     1131
+##  4 13      511
+##  5 08      476
+##  6 10      462
+##  7 09      437
+##  8 12      417
+##  9 16      392
+## 10 14      382
+## # ... with 14 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 44 45 46: RecordDate RecordTime-3.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+<em>RecordDate</em> and <em>RecordTime</em> display similar patterns to <em>trans_date</em> and <em>trans_time</em>, but not exactly identical. Explore relationship further.</p>
+<p><strong>Questions:</strong><br />
+Investigate time feature variables and how they relate to one another within the scope of each transaction.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.44" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-47-rowpointer" class="section level3">
+<h3><strong>Feature 47 | RowPointer</strong></h3>
+<pre><code>## # A tibble: 10,000 x 2
+##    RowPointer                               n
+##    &lt;chr&gt;                                &lt;int&gt;
+##  1 0003BFD0-8797-4DA9-A964-2141D6308062     1
+##  2 001660D7-8BA7-41D5-9D4A-61F01C6E3FEC     1
+##  3 00169E53-54C5-4E10-B06B-D315786D1174     1
+##  4 00172EAD-26A3-4400-BBDD-735C7EA06F8A     1
+##  5 0017FE4E-D4FA-48C7-8274-1F784460A140     1
+##  6 001A47BF-7F63-408D-87AA-8BC7E8E222A3     1
+##  7 001CFD83-9F2B-41D6-B631-1E6963191F29     1
+##  8 0028445C-E605-4E1B-9C9D-3396C19F4B5E     1
+##  9 00372762-CB29-473F-8DF4-EFBA3F4B3560     1
+## 10 00427E26-0AA4-4752-904A-0A4F4462A29C     1
+## # ... with 9,990 more rows</code></pre>
+<p><strong>Observations:</strong><br />
+The <em>RowPointer</em> feature has no discernable pattern other than dash marks (" - ") placed at regular intervals throughout each value. A unique identifier of some sort.</p>
+<p><strong>Questions:</strong><br />
+Would splitting these strings up (possibly at the “-”) create some features with meaning? The only bit of consistency comes from the number of places between each “-” mark.<br />
+Further clarification needed.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.47" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-48-createdby" class="section level3">
+<h3><strong>Feature 48 | CreatedBy</strong></h3>
+<pre><code>## # A tibble: 94 x 2
+##    CreatedBy                    n
+##    &lt;chr&gt;                    &lt;int&gt;
+##  1 &quot;JLCLARKNT\\JLW-DB1-RK$&quot;  6056
+##  2 sa                        1037
+##  3 jgraham                    644
+##  4 $service                   490
+##  5 dsiebold                   247
+##  6 InforWM                    153
+##  7 pjohnson                   132
+##  8 agantz                     116
+##  9 bsheets                     62
+## 10 fjohnson                    59
+## # ... with 84 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 48: CreatedBy-1.png" width="672" /></p>
+<p><strong>Obeservations:</strong><br />
+It appears that <em>createdBy</em> logs users in some fashion. A JLCLARK “user” is the most common type.</p>
+<p><strong>Questions:</strong><br />
+Does this feature log user information? If so, by what criteria?<br />
+Need furhter clarification.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.48" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-49-updatedby" class="section level3">
+<h3><strong>Feature 49 | UpdatedBy</strong></h3>
+<pre><code>## # A tibble: 5 x 2
+##   UpdatedBy      n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 sa          8557
+## 2 jgraham     1002
+## 3 dsiebold     340
+## 4 agantz        91
+## 5 plindstrom    10</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 49: UpdatedBy-1.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+It appears that <em>CreatedBy</em> and <em>UpdatedBy</em> are related in some fashion, having similar factor levels. In fact, <em>UpdatedBy</em> levels all occur in <em>CreatedBy</em>, however there are much fewer here. “sa” is the most frequent “user”.</p>
+<p><strong>Questions:</strong><br />
+How does <em>CreatedBy</em> relate to <em>UpdatedBy</em>?<br />
+How are “users” tracked?<br />
+Need further clarification.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.49" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-50-51-52-createdatetime-createdate-createtime" class="section level3">
+<h3><strong>Feature 50, 51, 52 | CreateDateTime, CreateDate, CreateTime</strong></h3>
+<pre><code>## # A tibble: 45 x 2
+##    dat            n
+##    &lt;chr&gt;      &lt;int&gt;
+##  1 07/23/2019   644
+##  2 08/14/2019   643
+##  3 08/05/2019   577
+##  4 07/22/2019   497
+##  5 07/02/2019   493
+##  6 08/29/2019   470
+##  7 07/03/2019   468
+##  8 08/22/2019   423
+##  9 08/15/2019   413
+## 10 10/17/2019   359
+## # ... with 35 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 50 51 52: RecordDate RecordTime-1.png" width="672" /></p>
+<pre><code>## # A tibble: 4 x 2
+##   mon       n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 Aug    4091
+## 2 Jul    2574
+## 3 Sep    1971
+## 4 Oct    1364</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 50 51 52: RecordDate RecordTime-2.png" width="672" /></p>
+<pre><code>## # A tibble: 24 x 2
+##    time      n
+##    &lt;chr&gt; &lt;int&gt;
+##  1 15     1805
+##  2 07     1157
+##  3 23     1128
+##  4 13      515
+##  5 08      499
+##  6 10      472
+##  7 09      416
+##  8 12      404
+##  9 16      394
+## 10 14      389
+## # ... with 14 more rows</code></pre>
+<p><img src="JobTran_Mst_FINAL_files/figure-html/Feature 50 51 52: RecordDate RecordTime-3.png" width="672" /></p>
+<p><strong>Observations:</strong><br />
+<em>CreateDate</em> and <em>CreateTime</em> display similar patterns to <em>trans_date</em>/<em>RecordDate</em> and <em>trans_time</em>.<em>RecordTime</em>, but not exactly identical. Explore relationship further.</p>
+<p><strong>Questions:</strong><br />
+Investigate time feature variables and how they relate to one another within the scope of each transaction.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.50" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="feature-53-inworkflow" class="section level3">
+<h3><strong>Feature 53 | InWorkflow</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   InWorkflow     n
+##        &lt;int&gt; &lt;int&gt;
+## 1          0 10000</code></pre>
+<p><strong>Observations:</strong><br />
+Every transaction has an <em>InWorkFlow</em> = 0. Could be something to do with currently operating transaction, meaning that if the transaction was currently taking place, there may be a 1 indicator (assumption). If this is the case, all historical data will have <em>InWorkFlow</em> value = 0 and as such is not meaningful for analysis. Consider ignoring.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="53" rows="5" cols="107" placeholder="enter comments here"></textarea>
+</div>
+<div id="features-54---59" class="section level3">
+<h3><strong>Features 54 - 59</strong></h3>
+<pre><code>## # A tibble: 1 x 2
+##   import_doc_id     n
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 NULL          10000</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   container_num     n
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 NULL          10000</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   parent_lot     n
+##   &lt;chr&gt;      &lt;int&gt;
+## 1 NULL       10000</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   parent_serial     n
+##   &lt;chr&gt;         &lt;int&gt;
+## 1 NULL          10000</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   RESID     n
+##   &lt;chr&gt; &lt;int&gt;
+## 1 NULL  10000</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   Uf_DocumentNum     n
+##   &lt;chr&gt;          &lt;int&gt;
+## 1 NULL           10000</code></pre>
+<p><strong>Observations:</strong><br />
+All values for the features: import_doc_id, container_num, parent_lot, parent_serial, RESID, Uf_DocumentNum are equal to NULL. Likely irrelevant variables.</p>
+<p><strong>Questions:</strong><br />
+Verify Relevancy and utilization.</p>
+<p><strong>JLC variable description:</strong></p>
+<textarea data-store="2.28.20.54" rows="5" cols="107" placeholder="enter comments here"></textarea>
+<hr />
+</div>
+</div>
+<div id="detailed-eda---part-2" class="section level2">
+<h2><strong>Detailed EDA - Part 2</strong></h2>
+<p><em>to be completed</em></p>
+</div>
+<div id="detailed-eda---part-3" class="section level2">
+<h2><strong>Detailed EDA - Part 3</strong></h2>
+<p><em>to be completed</em></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
